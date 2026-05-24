@@ -3,6 +3,8 @@ import torch
 from torchvision import datasets, transforms
 
 from train import LeNet5
+from train import ResNet
+
 
 # Data normalization
 # Used resource: https://stackoverflow.com/questions/63746182/correct-way-of-normalizing-and-scaling-the-mnist-dataset
@@ -16,15 +18,15 @@ test_dataset = datasets.MNIST(
     root="./data", train=False, download=True, transform=transform
 )
 
-INDEX = 2
+INDEX = 12
 
 image, label = test_dataset[INDEX]
 # Convert image to model input
 input_tensor = image.unsqueeze(0)
 
 # Load Model
-model = LeNet5()
-model.load_state_dict(torch.load("lenet5_mnist.pth"))
+model = ResNet()
+model.load_state_dict(torch.load("resnet_mnist.pth"))
 # Set to evaluation mode
 model.eval()
 
