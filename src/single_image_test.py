@@ -18,7 +18,7 @@ test_dataset = datasets.MNIST(
     root="./data", train=False, download=True, transform=transform
 )
 
-INDEX = 12
+INDEX = 349
 
 image, label = test_dataset[INDEX]
 # Convert image to model input
