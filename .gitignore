@@ -1,4 +1,6 @@
 .venv
 data
 lenet5_mnist.pth
+resnet_mnist.pth
 src/__pycache__
+debug_input.png

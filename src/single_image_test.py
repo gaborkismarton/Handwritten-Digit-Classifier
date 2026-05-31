@@ -2,9 +2,7 @@ import matplotlib.pyplot as plt
 import torch
 from torchvision import datasets, transforms
 
-from train import LeNet5
-from train import ResNet
-
+from train import LeNet5, ResNet
 
 # Data normalization
 # Used resource: https://stackoverflow.com/questions/63746182/correct-way-of-normalizing-and-scaling-the-mnist-dataset
