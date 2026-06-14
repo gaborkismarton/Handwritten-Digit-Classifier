@@ -149,7 +149,7 @@ def train():
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 
     # Initialize Model, Loss, and Optimizer
-    model = ResNet()
+    model = LeNet5()
     loss_func = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
@@ -170,7 +170,7 @@ def train():
                 print(f"Epoch [{epoch + 1}/{NUM_EPOCHS}], Batch [{i + 1}/{len(train_loader)}], Loss: {loss.item():.4f}")
 
     # Save the weights
-    model_filename = "resnet_mnist.pth"
+    model_filename = "lenet5_mnist.pth"
     torch.save(model.state_dict(), model_filename)
     print("Model saved as", model_filename)
 

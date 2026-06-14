@@ -23,8 +23,8 @@ image, label = test_dataset[INDEX]
 input_tensor = image.unsqueeze(0)
 
 # Load Model
-model = ResNet()
-model.load_state_dict(torch.load("resnet_mnist.pth"))
+model = LeNet5()
+model.load_state_dict(torch.load("lenet5_mnist.pth"))
 # Set to evaluation mode
 model.eval()
 
