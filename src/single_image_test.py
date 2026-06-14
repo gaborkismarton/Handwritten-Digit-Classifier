@@ -22,11 +22,26 @@ image, label = test_dataset[INDEX]
 # Convert image to model input
 input_tensor = image.unsqueeze(0)
 
-# Load Model
-model = LeNet5()
-model.load_state_dict(torch.load("lenet5_mnist.pth"))
-# Set to evaluation mode
-model.eval()
+# Selecting Model
+print("Select a model to test:")
+print("1: LeNet5")
+print("2: ResNet")
+choice = input("Enter 1 or 2: ").strip()
+
+if choice == '1':
+    # Load Model
+    model = LeNet5()
+    model.load_state_dict(torch.load("lenet5_mnist.pth"))
+    model_name = "LeNet5"
+
+elif choice == '2':
+    # Load Model
+    model = ResNet()
+    model.load_state_dict(torch.load("resnet_mnist.pth"))
+    model_name = "ResNet"
+
+else:
+    print("Invalid choice.")
 
 with torch.no_grad():
     logits = model(input_tensor)
@@ -36,6 +51,7 @@ with torch.no_grad():
     conf, prediction = torch.max(probs, 1)
 
 # Print a nice table of probabilities
+print(f"\nResults for {model_name}:")
 print(f"{'Digit':<10} | {'Probability':<10}")
 print("-" * 25)
 for i, p in enumerate(probs[0]):

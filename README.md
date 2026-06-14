@@ -5,12 +5,12 @@
 
 ## Overall Project Plan
 
-- Train a CNN (ex. LeNet5, UNet or compare multiple ones if we have time) with the MNIST dataset
+- Train a CNN (ex. LeNet5, ResNet or compare multiple ones if we have time) with the MNIST dataset
 - Develop a Gradio application where the user can draw numbers and the trained classifier will detect them: https://www.gradio.app/docs/gradio/imageeditor
 
 ## User Guide
 
-- Train LeNet5 model by running **src/train.py**:
+- Train LeNet5 and ResNet model by running **src/train.py**:
 ```bash
 uv run src/train.py
 ```
@@ -18,4 +18,10 @@ uv run src/train.py
   - You can change the INDEX variable to select different images from the MNIST Dataset
 ```bash
 uv run src/single_image_test.py
+```
+- Launch the interactive web interface using **src/gui.py**:
+  - This will open a local web application in your browser.
+  - You can draw a digit on the canvas, choose between the trained LeNet5 or ResNet models, and classify your drawing to see the model's prediction and confidence levels.
+```bash
+uv run src/gui.py
 ```

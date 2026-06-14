@@ -4,10 +4,16 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-
-# LeNet5 model
-# Used resource: https://medium.com/@siddheshb008/lenet-5-architecture-explained-3b559cb2d52b
 class LeNet5(nn.Module):
+
+    """
+    Standard LeNet-5 architecture adapted for the MNIST dataset.
+    
+    Reference: 
+    https://medium.com/@siddheshb008/lenet-5-architecture-explained-3b559cb2d52b
+    
+    """
+
     def __init__(self):
         super().__init__()
         self.model = nn.Sequential(
@@ -41,10 +47,16 @@ class LeNet5(nn.Module):
         x = self.model(x)
         return x
 
-# RESNet model
-# Used resource: https://www.geeksforgeeks.org/deep-learning/residual-networks-resnet-deep-learning/
-
 class ResidualBlock(nn.Module):
+
+    """
+    Standard ResNet architecture adapted for the MNIST dataset.
+    
+    Reference: 
+    https://www.geeksforgeeks.org/deep-learning/residual-networks-resnet-deep-learning/
+
+    """
+
     def __init__(self, in_channels, out_channels, stride = 1):
         super().__init__()
         # Main path
@@ -90,23 +102,23 @@ class ResNet(nn.Module):
         
         # Setting up for the MNIST (1 channel, 28x28)
         self.prep = nn.Sequential(
-            nn.Conv2d(in_channels=1, out_channels=4, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(4),
+            nn.Conv2d(in_channels=1, out_channels=2, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(2),
             nn.ReLU()
         )
 
         # Each layer contains 2 Residual Blocks, we halve the dimension and double the channels after the first
-        self.layer1 = self._make_layer(in_channels=4, out_channels=4, stride=1)
-        self.layer2 = self._make_layer(in_channels=4, out_channels=8, stride=2)
-        self.layer3 = self._make_layer(in_channels=8, out_channels=16, stride=2)
-        self.layer4 = self._make_layer(in_channels=16, out_channels=32, stride=2)
+        self.layer1 = self._make_layer(in_channels=2, out_channels=2, stride=1)
+        self.layer2 = self._make_layer(in_channels=2, out_channels=4, stride=2)
+        self.layer3 = self._make_layer(in_channels=4, out_channels=8, stride=2)
+        self.layer4 = self._make_layer(in_channels=8, out_channels=16, stride=2)
 
         # We make sure the output is 1X1
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         #Then flatten it into a vector
         self.flatten = nn.Flatten()
-        # Then we transform the 32 output from layer 4 into 10, one for each digit
-        self.fc = nn.Linear(in_features=32, out_features=10)
+        # Then we transform the 16 output from layer 4 into 10, one for each digit
+        self.fc = nn.Linear(in_features=16, out_features=10)
 
     def _make_layer(self, in_channels, out_channels, stride):
         # Combines two blocks to form a full ResNet layer block
@@ -148,31 +160,35 @@ def train():
     )
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 
-    # Initialize Model, Loss, and Optimizer
-    model = LeNet5()
-    loss_func = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    # Initialize Models, Loss, and Optimizer
+    models_to_train = [(LeNet5(), "lenet5_mnist.pth", "LeNet5"), (ResNet(), "resnet_mnist.pth", "ResNet")]
 
-    # Training Loop
-    model.train()
-    for epoch in range(NUM_EPOCHS):
-        running_loss = 0.0
-        for i, (images, labels) in enumerate(train_loader):
-            optimizer.zero_grad()
-            outputs = model(images)
-            loss = loss_func(outputs, labels)
-            loss.backward()
-            optimizer.step()
+    for model, model_filename, model_name in models_to_train:
 
-            running_loss += loss.item()
+        print(f"\nStarting training for {model_name}")
 
-            if (i + 1) % 100 == 0:
-                print(f"Epoch [{epoch + 1}/{NUM_EPOCHS}], Batch [{i + 1}/{len(train_loader)}], Loss: {loss.item():.4f}")
+        loss_func = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-    # Save the weights
-    model_filename = "lenet5_mnist.pth"
-    torch.save(model.state_dict(), model_filename)
-    print("Model saved as", model_filename)
+        # Training Loop
+        model.train()
+        for epoch in range(NUM_EPOCHS):
+            running_loss = 0.0
+            for i, (images, labels) in enumerate(train_loader):
+                optimizer.zero_grad()
+                outputs = model(images)
+                loss = loss_func(outputs, labels)
+                loss.backward()
+                optimizer.step()
+
+                running_loss += loss.item()
+
+                if (i + 1) % 100 == 0:
+                    print(f"Epoch [{epoch + 1}/{NUM_EPOCHS}], Batch [{i + 1}/{len(train_loader)}], Loss: {loss.item():.4f}")
+
+        # Save the weights
+        torch.save(model.state_dict(), model_filename)
+        print("Model saved as", model_filename)
 
 
 if __name__ == "__main__":
