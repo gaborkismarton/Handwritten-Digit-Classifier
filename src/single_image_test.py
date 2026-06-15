@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import torch
 from torchvision import datasets, transforms
 
-from train import LeNet5, ResNet
+from models.lenet5 import LeNet5
+from models.resnet import ResNet
 
 # Data normalization
 # Used resource: https://stackoverflow.com/questions/63746182/correct-way-of-normalizing-and-scaling-the-mnist-dataset
@@ -28,16 +29,16 @@ print("1: LeNet5")
 print("2: ResNet")
 choice = input("Enter 1 or 2: ").strip()
 
-if choice == '1':
+if choice == "1":
     # Load Model
     model = LeNet5()
-    model.load_state_dict(torch.load("lenet5_mnist.pth"))
+    model.load_state_dict(torch.load("trained_models/lenet5_mnist.pth"))
     model_name = "LeNet5"
 
-elif choice == '2':
+elif choice == "2":
     # Load Model
     model = ResNet()
-    model.load_state_dict(torch.load("resnet_mnist.pth"))
+    model.load_state_dict(torch.load("trained_models/resnet_mnist.pth"))
     model_name = "ResNet"
 
 else:

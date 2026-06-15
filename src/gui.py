@@ -3,16 +3,16 @@ import torch
 from PIL import Image
 from torchvision import transforms
 
-from train import LeNet5
-from train import ResNet
+from models.lenet5 import LeNet5
+from models.resnet import ResNet
 
 # Load the trained models into memory
 lenet_model = LeNet5()
-lenet_model.load_state_dict(torch.load("lenet5_mnist.pth"))
+lenet_model.load_state_dict(torch.load("trained_models/lenet5_mnist.pth"))
 lenet_model.eval()
 
 resnet_model = ResNet()
-resnet_model.load_state_dict(torch.load("resnet_mnist.pth"))
+resnet_model.load_state_dict(torch.load("trained_models/resnet_mnist.pth"))
 resnet_model.eval()
 
 # Data normalization*
@@ -77,12 +77,11 @@ with gr.Blocks(title="Handwritten Digit Classifier") as demo:
 
     with gr.Row():
         with gr.Column():
-
             model_selector = gr.Radio(
                 choices=["LeNet5", "ResNet"],
                 value="LeNet5",  # Default selection
                 label="Select Model",
-                interactive=True
+                interactive=True,
             )
 
             canvas = gr.ImageEditor(
@@ -97,7 +96,9 @@ with gr.Blocks(title="Handwritten Digit Classifier") as demo:
             output_text = gr.Markdown(label="Results")
 
     # Link the button to the prediction function
-    submit_btn.click(fn=predict_digit, inputs=[canvas, model_selector], outputs=output_text)
+    submit_btn.click(
+        fn=predict_digit, inputs=[canvas, model_selector], outputs=output_text
+    )
 
 if __name__ == "__main__":
     demo.launch(footer_links=["settings"])
