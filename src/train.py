@@ -41,11 +41,18 @@ def train():
         model.train()
         for epoch in range(NUM_EPOCHS):
             running_loss = 0.0
+
+            #Iterates over the dataset in small batches
             for i, (images, labels) in enumerate(train_loader):
+                # Clear old gradients from the previous step
                 optimizer.zero_grad()
+                # pass the images through the network to get predictions
                 outputs = model(images)
+                # Compute the loss
                 loss = loss_func(outputs, labels)
+                # calculate the gradients of the loss with respect to the model parameters
                 loss.backward()
+                # update the model weights using the calculated gradients
                 optimizer.step()
 
                 running_loss += loss.item()

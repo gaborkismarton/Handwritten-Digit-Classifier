@@ -3,12 +3,13 @@ import torch.nn as nn
 
 
 class ResidualBlock(nn.Module):
+
     """
     Standard ResNet architecture adapted for the MNIST dataset.
 
     Reference:
     https://www.geeksforgeeks.org/deep-learning/residual-networks-resnet-deep-learning/
-    
+
     """
 
     def __init__(self, in_channels, out_channels, stride=1):
@@ -77,7 +78,7 @@ class ResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         # Flatten: Flattens features into a vector
         self.flatten = nn.Flatten()
-        # FC: Fully Connected Layer, features: 32 -> 10 (one for each digit)
+        # Fully Connected Layer, features: 32 -> 10 (one for each digit)
         self.fc = nn.Linear(in_features=32, out_features=10)
 
     def make_layer(self, in_channels, out_channels, stride):
