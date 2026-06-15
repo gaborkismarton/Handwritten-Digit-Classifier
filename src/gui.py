@@ -8,11 +8,11 @@ from models.resnet import ResNet
 
 # Load the trained models into memory
 lenet_model = LeNet5()
-lenet_model.load_state_dict(torch.load("trained_models/lenet5_mnist.pth"))
+lenet_model.load_state_dict(torch.load("lenet5_mnist.pth"))
 lenet_model.eval()
 
 resnet_model = ResNet()
-resnet_model.load_state_dict(torch.load("trained_models/resnet_mnist.pth"))
+resnet_model.load_state_dict(torch.load("resnet_mnist.pth"))
 resnet_model.eval()
 
 # Data normalization*

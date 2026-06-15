@@ -17,7 +17,7 @@ test_dataset = datasets.MNIST(
     root="./data", train=False, download=True, transform=transform
 )
 
-INDEX = 349
+INDEX = 67
 
 image, label = test_dataset[INDEX]
 # Convert image to model input
@@ -32,17 +32,19 @@ choice = input("Enter 1 or 2: ").strip()
 if choice == "1":
     # Load Model
     model = LeNet5()
-    model.load_state_dict(torch.load("trained_models/lenet5_mnist.pth"))
+    model.load_state_dict(torch.load("lenet5_mnist.pth"))
     model_name = "LeNet5"
 
 elif choice == "2":
     # Load Model
     model = ResNet()
-    model.load_state_dict(torch.load("trained_models/resnet_mnist.pth"))
+    model.load_state_dict(torch.load("resnet_mnist.pth"))
     model_name = "ResNet"
 
 else:
     print("Invalid choice.")
+
+model.eval()
 
 with torch.no_grad():
     logits = model(input_tensor)

@@ -8,61 +8,44 @@ class ResidualBlock(nn.Module):
 
     Reference:
     https://www.geeksforgeeks.org/deep-learning/residual-networks-resnet-deep-learning/
-
+    
     """
 
     def __init__(self, in_channels, out_channels, stride=1):
         super().__init__()
         # Main path
         self.main_path = nn.Sequential(
-            # First convolutional layer of the block, padding ensures that the dimensions do not change
-            # We deifen the stride to be 1, but it can be increased to reduce run time
-            nn.Conv2d(
-                in_channels,
-                out_channels,
-                kernel_size=3,
-                stride=stride,
-                padding=1,
-                bias=False,
-            ),
-            # Normalizing the output after conv so the training is faster
+            # Conv1: Convolutional Layer, kernel: 3x3, stride: variable, padding: 1
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False),
+            # BatchNorm1: Batch Normalization Layer
             nn.BatchNorm2d(out_channels),
-            # ReLu does what is does
+            # ReLU activation function
             nn.ReLU(),
-            # Second convolutional layer, same as before just with a fixed stride of 1 so the dim is not modified
-            nn.Conv2d(
-                out_channels,
-                out_channels,
-                kernel_size=3,
-                stride=1,
-                padding=1,
-                bias=False,
-            ),
+            # Conv2: Convolutional Layer, kernel: 3x3, stride: 1, padding: 1
+            nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False),
+            # BatchNorm2: Batch Normalization Layer
             nn.BatchNorm2d(out_channels),
         )
 
         # Skip connection
         self.shortcut = nn.Sequential()
 
+        # Projection Shortcut: Adjusts dimensions and channels to match main path output
         if stride != 1 or in_channels != out_channels:
-            # If dimensions or channels change we need to match them up again so we do a 1 x 1 conv
             self.shortcut = nn.Sequential(
-                nn.Conv2d(
-                    in_channels, out_channels, kernel_size=1, stride=stride, bias=False
-                ),
+                # Conv1x1: Convolutional Layer, kernel: 1x1, stride: variable
+                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False),
+                # BatchNorm: Batch Normalization Layer
                 nn.BatchNorm2d(out_channels),
             )
 
-    # We define how the data flows
     def forward(self, x):
-
-        # Puts X through the main path consisting of the convs
+        # Pass input through the main convolutional path
         out = self.main_path(x)
-        # Add the original input back to the output while also modifying dimension if needed
+        # Add the original input to the output
         out += self.shortcut(x)
-        # ReLu does something
+        # ReLU activation function applied after addition
         out = torch.relu(out)
-
         return out
 
 
@@ -70,52 +53,52 @@ class ResNet(nn.Module):
     def __init__(self):
         super().__init__()
 
-        # Setting up for the MNIST (1 channel, 28x28)
+        # Prep: Initial preparation block for MNIST (channels: 1 -> 4, 28x28 images)
         self.prep = nn.Sequential(
-            nn.Conv2d(
-                in_channels=1,
-                out_channels=2,
-                kernel_size=3,
-                stride=1,
-                padding=1,
-                bias=False,
-            ),
-            nn.BatchNorm2d(2),
+            # Conv0: Convolutional Layer, channels: 1 -> 4, kernel: 3x3, stride: 1, padding: 1
+            nn.Conv2d(in_channels=1, out_channels=4, kernel_size=3, stride=1, padding=1, bias=False),
+            # BatchNorm: Batch Normalization Layer
+            nn.BatchNorm2d(4),
+            # ReLU activation function
             nn.ReLU(),
         )
 
-        # Each layer contains 2 Residual Blocks, we halve the dimension and double the channels after the first
-        self.layer1 = self._make_layer(in_channels=2, out_channels=2, stride=1)
-        self.layer2 = self._make_layer(in_channels=2, out_channels=4, stride=2)
-        self.layer3 = self._make_layer(in_channels=4, out_channels=8, stride=2)
-        self.layer4 = self._make_layer(in_channels=8, out_channels=16, stride=2)
+        # ResNet Layers: Each contains 2 Residual Blocks
+        # Layer 1: channels 4 -> 4, stride: 1 (dimensions unchanged)
+        self.layer1 = self.make_layer(in_channels=4, out_channels=4, stride=1)
+        # Layer 2: channels 4 -> 8, stride: 2 (halves spatial dimensions)
+        self.layer2 = self.make_layer(in_channels=4, out_channels=8, stride=2)
+        # Layer 3: channels 8 -> 16, stride: 2 (halves spatial dimensions)
+        self.layer3 = self.make_layer(in_channels=8, out_channels=16, stride=2)
+        # Layer 4: channels 16 -> 32, stride: 2 (halves spatial dimensions)
+        self.layer4 = self.make_layer(in_channels=16, out_channels=32, stride=2)
 
-        # We make sure the output is 1X1
+        # Pool: Adaptive Average Pooling Layer, ensures 1x1 spatial output
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        # Then flatten it into a vector
+        # Flatten: Flattens features into a vector
         self.flatten = nn.Flatten()
-        # Then we transform the 16 output from layer 4 into 10, one for each digit
-        self.fc = nn.Linear(in_features=16, out_features=10)
+        # FC: Fully Connected Layer, features: 32 -> 10 (one for each digit)
+        self.fc = nn.Linear(in_features=32, out_features=10)
 
-    def _make_layer(self, in_channels, out_channels, stride):
-        # Combines two blocks to form a full ResNet layer block
+    def make_layer(self, in_channels, out_channels, stride):
+        # Combines two blocks sequentially to form a full ResNet layer stage
         return nn.Sequential(
             ResidualBlock(in_channels, out_channels, stride),
             ResidualBlock(out_channels, out_channels, stride=1),
         )
 
-    # An image x enters the network, passes through the 1-channel preparation block,
-    # flows sequentially through all four residual stages,
-    # is pooled down to 1x1,
-    # flattened into a vector,
-    # and finally pushed through the linear classifier to yield the predictions.
     def forward(self, x):
+        # Input passes through the 1-channel preparation block
         x = self.prep(x)
+        # Sequential flow through all four residual layers
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
+        # Pooled down to a 1x1 spatial resolution
         x = self.avgpool(x)
+        # Flattened into a 1D vector
         x = self.flatten(x)
+        # Linear classifier yields the final digit predictions
         x = self.fc(x)
         return x

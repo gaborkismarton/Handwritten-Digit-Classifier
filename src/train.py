@@ -9,6 +9,7 @@ from models.resnet import ResNet
 
 LEARNING_RATE = 0.001
 NUM_EPOCHS = 5
+BATCH_SIZE = 100
 
 
 def train():
@@ -22,7 +23,7 @@ def train():
     train_dataset = datasets.MNIST(
         root="./data", train=True, download=True, transform=transform
     )
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     # Initialize Models, Loss, and Optimizer
     models_to_train = [
@@ -56,7 +57,7 @@ def train():
                     running_loss = 0.0
 
         # Save the weights
-        torch.save(model.state_dict(), f"trained_models/{model_filename}")
+        torch.save(model.state_dict(), model_filename)
         print("Model saved as", model_filename)
 
 
