@@ -31,7 +31,7 @@ class ResidualBlock(nn.Module):
         # Skip connection
         self.shortcut = nn.Sequential()
 
-        # Projection Shortcut: Adjusts dimensions and channels to match main path output
+        # Adjusts dimensions and channels to match main path output
         if stride != 1 or in_channels != out_channels:
             self.shortcut = nn.Sequential(
                 # Conv1x1: Convolutional Layer, kernel: 1x1, stride: variable

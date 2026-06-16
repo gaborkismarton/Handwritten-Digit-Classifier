@@ -58,9 +58,7 @@ def train():
                 running_loss += loss.item()
 
                 if (i + 1) % 100 == 0:
-                    print(
-                        f"Epoch [{epoch + 1}/{NUM_EPOCHS}], Batch [{i + 1}/{len(train_loader)}], Loss: {running_loss / 100:.4f}"
-                    )
+                    print(f"Epoch [{epoch + 1}/{NUM_EPOCHS}], Batch [{i + 1}/{len(train_loader)}], Loss: {running_loss / 100:.4f}")
                     running_loss = 0.0
 
         # Save the weights
