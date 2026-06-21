@@ -2,6 +2,7 @@
 data
 lenet5_mnist.pth
 resnet_mnist.pth
+simplenet_mnist.pth
 src/__pycache__
 src/models/__pycache__
 debug_input.png

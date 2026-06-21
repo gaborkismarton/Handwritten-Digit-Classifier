@@ -2,12 +2,13 @@ import matplotlib.pyplot as plt
 import torch
 from torchvision import datasets, transforms
 
+# Import all three models
+from models.simplenet import SimpleNet
 from models.lenet5 import LeNet5
 from models.resnet import ResNet
 
 # Data normalization
 # Used resource: https://stackoverflow.com/questions/63746182/correct-way-of-normalizing-and-scaling-the-mnist-dataset
-
 transform = transforms.Compose(
     [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
 )
@@ -25,24 +26,32 @@ input_tensor = image.unsqueeze(0)
 
 # Selecting Model
 print("Select a model to test:")
-print("1: LeNet5")
-print("2: ResNet")
-choice = input("Enter 1 or 2: ").strip()
+print("1: SimpleNet (Baseline)")
+print("2: LeNet5")
+print("3: ResNet")
+choice = input("Enter 1, 2, or 3: ").strip()
 
 if choice == "1":
-    # Load Model
+    # Load SimpleNet
+    model = SimpleNet()
+    model.load_state_dict(torch.load("simplenet_mnist.pth"))
+    model_name = "SimpleNet"
+
+elif choice == "2":
+    # Load LeNet5
     model = LeNet5()
     model.load_state_dict(torch.load("lenet5_mnist.pth"))
     model_name = "LeNet5"
 
-elif choice == "2":
-    # Load Model
+elif choice == "3":
+    # Load ResNet
     model = ResNet()
     model.load_state_dict(torch.load("resnet_mnist.pth"))
     model_name = "ResNet"
 
 else:
     print("Invalid choice.")
+    exit()
 
 model.eval()
 
@@ -61,7 +70,7 @@ for i, p in enumerate(probs[0]):
     # Format as a percentage with 4 decimal places
     print(f"{i:<10} | {p.item() * 100:>8.4f}%")
 
-print(f"Actual Label: {label}")
+print(f"\nActual Label: {label}")
 print(f"Model Prediction: {prediction.item()}")
 print(f"Confidence: {conf[0] * 100:.2f}%")
 
