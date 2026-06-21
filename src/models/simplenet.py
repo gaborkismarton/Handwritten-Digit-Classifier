@@ -3,7 +3,7 @@ import torch.nn as nn
 class SimpleNet(nn.Module):
 
     """
-    A basic Fully Connected Neural Network (MLP) for baseline comparison.
+    A basic MLP
 
     Reference:
     https://www.geeksforgeeks.org/deep-learning/multi-layer-perceptron-learning-in-tensorflow/
