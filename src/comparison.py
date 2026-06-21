@@ -81,7 +81,6 @@ plt.show()
 
 # Final comparison table
 print("\nFinal Model Comparison")
-print("-" * 65)
 
 comparison = (
     df.groupby("Model")
@@ -96,6 +95,6 @@ comparison = (
 print(comparison)
 
 print("\nSaved:")
-print("  training_loss.png")
-print("  test_accuracy.png")
-print("  training_time.png")
+print("training_loss.png")
+print("test_accuracy.png")
+print("training_time.png")
