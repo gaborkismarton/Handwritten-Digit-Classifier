@@ -95,10 +95,7 @@ comparison = (
 
 print(comparison)
 
-comparison.to_csv("model_comparison.csv")
-
 print("\nSaved:")
 print("  training_loss.png")
 print("  test_accuracy.png")
 print("  training_time.png")
-print("  model_comparison.csv")

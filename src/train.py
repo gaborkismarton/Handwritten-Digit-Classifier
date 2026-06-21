@@ -11,8 +11,8 @@ from models.resnet import ResNet
 from models.simplenet import SimpleNet
 
 LEARNING_RATE = 0.001
-NUM_EPOCHS = 15
-BATCH_SIZE = 256
+NUM_EPOCHS = 10
+BATCH_SIZE = 1024
 
 
 def train():

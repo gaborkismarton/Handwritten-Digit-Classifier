@@ -1,4 +1,4 @@
 Model,Final_Loss,Final_Accuracy,Average_Epoch_Time
-LeNet5,0.018,98.96,27.575
-ResNet,0.011,98.86,73.871
-SimpleNet,0.006,98.02,20.927
+LeNet5,0.064,98.07,32.597
+ResNet,0.016,98.65,68.692
+SimpleNet,0.096,96.67,21.704
