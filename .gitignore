@@ -6,3 +6,5 @@ simplenet_mnist.pth
 src/__pycache__
 src/models/__pycache__
 debug_input.png
+model_comparison.csv
+training_history.csv
